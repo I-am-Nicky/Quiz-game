@@ -11,14 +11,14 @@ export type AnswerObject = {
   correctAnswer: string;
 };
 
-const TOTAL_QUESTIONS = 1;
+const TOTAL_QUESTIONS = 10;
 
 const App = () => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestion] = useState<QuestionState[]>([]);
   const [number, setNumber] = useState(0);
   const [userAnswer, setUserAnswer] = useState<AnswerObject[]>([]);
-  //const [score, setScore] = useState(0);
+  const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
 
   const startTrivia = async () => {
@@ -31,7 +31,7 @@ const App = () => {
     );
 
     setQuestion(newQuestions);
-    //setScore(0);
+    setScore(0);
     setUserAnswer([]);
     setNumber(0);
     setLoading(false);
@@ -41,7 +41,7 @@ const App = () => {
     if (!gameOver) {
       const answer = e.currentTarget.value;
       const correct = questions[number].correct_answer === answer;
-      //if (correct) setScore((prev) => prev + 1);
+      if (correct) setScore((prev) => prev + 1);
       const answerObject = {
         question: questions[number].question,
         answer,
@@ -52,13 +52,13 @@ const App = () => {
     }
   };
 
-  const SubmitQuestion = () => {
-    const SubmitQuestion = number + 1;
+  const nextQuestion = () => {
+    const nextQuestion = number + 1;
 
-    if (SubmitQuestion === TOTAL_QUESTIONS) {
+    if (nextQuestion === TOTAL_QUESTIONS) {
       setGameOver(true);
     } else {
-      setNumber(SubmitQuestion);
+      setNumber(nextQuestion);
     }
   };
   return (
@@ -66,6 +66,7 @@ const App = () => {
       <GlobalStyle />
       <Wrapper>
         <h1>Small Trivia Game</h1>
+        {!gameOver ? <p className="score">Score: {score}</p> : null}
         {gameOver || userAnswer.length === TOTAL_QUESTIONS ? (
           <button className="start" onClick={startTrivia}>
             Start
@@ -82,12 +83,13 @@ const App = () => {
             callback={checkAnswer}
           />
         )}
+
         {!gameOver &&
         !loading &&
         userAnswer.length === number + 1 &&
         number !== TOTAL_QUESTIONS - 1 ? (
-          <button className="next" onClick={SubmitQuestion}>
-            Submit
+          <button className="next" onClick={nextQuestion}>
+            nextQuestion
           </button>
         ) : null}
       </Wrapper>
